@@ -10,6 +10,9 @@ WHERE Books.Title = @BookName
 And library_branch.BranchName = @BranchName
 Go
 
+EXEC [dbo].[uspGetBookCopyNum] @BookName = 'The Lost Tribe', @BranchName = 'Sharpstown'
+
+
 --Procedure 2
 CREATE PROCEDURE dbo.uspGetCopyperBranch @BookName nvarchar(50)
 AS
@@ -18,8 +21,10 @@ FROM Book_Copies
 INNER JOIN Books ON Book_Copies.BookID = Books.BookID
 INNER JOIN library_branch ON Book_Copies.BranchID = library_branch.BranchID
 WHERE Books.Title = @BookName
-
 Go
+
+EXEC [dbo].[uspGetCopyperBranch] @BookName = 'The Lost Tribe'
+
 
 -- Procedure 3
 CREATE PROCEDURE dbo.uspGetNoBorrows
@@ -29,6 +34,10 @@ FROM Borrower
 LEFT OUTER JOIN Book_Loans ON Borrower.CardNo = Book_Loans.CardNo
 WHERE Book_Loans.CardNo IS NULL
 Go
+
+EXEC [dbo].[uspGetNoBorrows]
+
+
 
 -- Procedure 4
 CREATE PROCEDURE dbo.uspGetDueToday @BranchName nvarchar(50), @TodaysDate date
@@ -42,6 +51,9 @@ WHERE BranchName = @BranchName
 AND DateDue = @TodaysDate
 GO
  
+ EXEC [dbo].[uspGetDueToday] @BranchName = 'Sharpstown', @TodaysDate = '20190926'
+
+
 
  -- Procedure 5
  CREATE PROCEDURE dbo.uspGetBranchLoanTotals @BranchName nvarchar(50)
@@ -53,6 +65,7 @@ GO
  GROUP BY BranchName
  GO
 
+EXEC [dbo].[uspGetBranchLoanTotals] @BranchName = 'Burien'
 
 
  -- Procedure 6
@@ -65,6 +78,10 @@ GO
  HAVING COUNT(BookID) > 5
  GO
 
+EXEC [dbo].[uspGetBigReaders] 
+
+
+
  -- Procedure 7
  CREATE PROCEDURE dbo.uspGetAuthorByBranch @BranchName nvarchar(50), @AuthorName nvarchar(50)
  AS 
@@ -75,3 +92,5 @@ GO
  FULL JOIN library_branch ON Book_Copies.BranchID = library_branch.BranchID
  WHERE BranchName = @BranchName AND AuthorName = @AuthorName
  GO 
+
+ EXEC [dbo].[uspGetAuthorByBranch] @BranchName = 'Central', @AuthorName = 'Stephen King'
